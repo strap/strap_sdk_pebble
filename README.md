@@ -1,3 +1,5 @@
+![alt text](https://www.straphq.com/img/strap-logo@2.png "Strap Logo")
+
 Strap is a real-time wearable analytics platform for developers. This repository contains the SDK for Pebble. Strap is currently in private beta, and you'll need an account on the dashboard to use this SDK. Signup today at http://www.straphq.com/register.
 
 
