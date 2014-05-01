@@ -121,5 +121,5 @@ We hope that getting started with the Strap SDK is easy for you. These steps sho
 
 If you're stuck, check out the sample project that should help you get started.
 
-Accelerometer data is automatically sent in the background periodically and crunched on the server every few hours. If you have issues or problems, please open an issue on GitHub or visit our community support portal at http://strap.uservoice.com
+Accelerometer data is automatically sent in the background periodically and crunched on the server every few hours. If you have issues or problems, please open an issue on GitHub, visit our community support portal at http://strap.uservoice.com, email us at support@straphq.com, or tweet us <a href="http://www.twitter.com/getstrap">@getstrap</a>
 
