@@ -11,9 +11,15 @@ We currently support the Pebble Javascript SDK (>2.0). Strap utilizes AppMessage
 We hope that getting started with the Strap SDK is easy for you. These steps shouldn't take more than 15-20 minutes. Grab a cup of coffee, and let's get to it!
 
 ---
-1. Login to the <a href="http://www.straphq.com/login">Strap Dashboard</a> and create an app. You'll need your App ID handy for the next step.
+1. Install the Strap SDK in your Pebble project. Run this from the src directory:
 
-2. Paste the JS code into your pebble-app.js. This step is important, because without it the Strap code on the device can't communicate with the Strap API. This step has two parts: 
+   ```
+   curl http://pebble-install.straphq.com | sh
+   ```
+   
+2. Login to the <a href="http://www.straphq.com/login">Strap Dashboard</a> and create an app. You'll need your App ID handy for the next step.
+
+3. Paste the JS code into your pebble-app.js. This step is important, because without it the Strap code on the device can't communicate with the Strap API. This step has two parts: 
   * Paste the following initialization code at the top of your Javascript file. 
     ```
     // ------------------------------
@@ -56,18 +62,6 @@ We hope that getting started with the Strap SDK is easy for you. These steps sho
     );
     ```
 
-3. Include the Strap C source in your src directory. We typically lean towards a directory structure that looks like this:
-
-    ```
-    /pebble-app
-    - /src
-    - - / js
-    - - - pebble-js-app.js (put Strap JS code in here)
-    - - / strap (the Strap C source)
-    - - - strap.c
-    - - - strap.h
-    - - pebble-app.c
-    ```
 4. Include strap.h in any of your source that contains actions you want to track in Strap. At a minimum, you must include the Strap header and call the init functions below for Strap to track anything. Make sure you correct the path relative to your source.
 
     `# include "strap/strap.h"`
