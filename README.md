@@ -11,7 +11,7 @@ We currently support the Pebble Javascript SDK (>2.0). Strap utilizes AppMessage
 We hope that getting started with the Strap SDK is easy for you. These steps shouldn't take more than 15-20 minutes. Grab a cup of coffee, and let's get to it!
 
 ---
-1. Install the Strap SDK in your Pebble project. Run this from the src directory:
+1. Add the Strap SDK to your Pebble project. Run this from the src directory:
 
    ```
    curl http://pebble-install.straphq.com | sh
