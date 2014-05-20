@@ -6,7 +6,7 @@ Strap is a real-time wearable analytics platform for developers. This repository
 ##Strap Pebble SDK Quick Start Guide
 
 
-We currently support the Pebble Javascript SDK (>2.0). Strap utilizes AppMessage to communicate between the watch and the connected phone, and tries to be smart about how often it sends data in order to preserve battery life. 
+We currently support the PebbleKit Javascript SDK (>2.0). Strap utilizes AppMessage to communicate between the watch and the connected phone, and tries to be smart about how often it sends data in order to preserve battery life. 
 
 We hope that getting started with the Strap SDK is easy for you. These steps shouldn't take more than 15-20 minutes. Grab a cup of coffee, and let's get to it!
 
