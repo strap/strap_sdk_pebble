@@ -10,6 +10,8 @@ We now support both Pebble JS apps and companion apps for iOS and Android. Strap
 
 We hope that getting started with the Strap Metrics SDK is easy for you. These steps shouldn't take more than 15-20 minutes. Grab a cup of coffee, and let's get to it!
 
+** Note: The below shows you how to integrate with a JS project. If you have an iOS or Android companion app, check out the README in the companion directory. The rest of the steps below still apply.
+
 ---
 1. Add the Strap Metrics SDK to your Pebble project. Run this from the src directory:
 
