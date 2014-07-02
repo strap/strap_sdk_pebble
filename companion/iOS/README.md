@@ -1,10 +1,10 @@
-Getting Started with the StrapMetrics Pebble SDK for iOS Companion Apps
+Getting Started with the Strap Metrics Pebble SDK for iOS Companion Apps
 ========================
-1. Follow the instructions in the main quick start guide for implementing StrapMetrics into your Pebble C.
+1. Follow the instructions in the main quick start guide for implementing Strap Metrics into your Pebble C.
 2. Include libStrapMetrics.a in your Xcode project.
 3. Add StrapMetrics.h to your Xcode project.
 4. Import StrapMetrics.h in the implementation which contains your Pebble logic.
-5. Paste in the StrapMetrics init code:
+5. Paste in the Strap Metrics init code:
 
 		// Strap API Setup:
 
