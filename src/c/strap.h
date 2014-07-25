@@ -5,6 +5,10 @@
 #define STRAP_FREQ_MED      2  // less data collection, with moderate power drain
 #define STRAP_FREQ_LOW      3  // least data collection, lowest power drain
 
+// #define DISABLE_ACCL 
+
+// #define DEBUG
+  
 void strap_init();
 void strap_deinit();
 void strap_log_action(char *);

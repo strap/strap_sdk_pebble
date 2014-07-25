@@ -1,6 +1,6 @@
 ![alt text](https://s3.amazonaws.com/strap-assets/strap-metrics.png "Strap Metrics Logo")
 
-Strap Metrics is a real-time wearable analytics platform for developers. This repository contains the Strap Metrics SDK for Pebble. Strap Metrics is currently in public beta, and you'll need an account on the dashboard to use this SDK. Signup today at http://www.straphq.com/register.
+Strap Metrics is a real-time wearable analytics platform for developers. This repository contains the Strap Metrics SDK for Pebble. Strap Metrics is currently in beta, and you'll need an account on the dashboard to use this SDK. Signup today at http://www.straphq.com/register.
 
 
 ##Strap Metrics Pebble SDK Quick Start Guide

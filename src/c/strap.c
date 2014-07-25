@@ -16,6 +16,7 @@ limitations under the License.
 
 #include <pebble.h>
 #include "strap.h"
+#include "accl.h"
 
 #define TupletStaticCString(_key, _cstring, _length) \
 ((const Tuplet) { .type = TUPLE_CSTRING, .key = _key, .cstring = { .data = _cstring, .length = _length + 1 }})
@@ -31,12 +32,9 @@ limitations under the License.
 #define T_LOG 3000
 
 #define NUM_SAMPLES 10
-static AccelData accl_data[NUM_SAMPLES];
 static int report_accl = 0;
 static char cur_activity[15];
-static bool has_accl_data = false;
-//static int retryCount = 0;
-//static int retryMax = 10;
+
 
 #define LOG_ROWS 30
 #define LOG_COLS 50
@@ -86,117 +84,6 @@ static char* translate_error(AppMessageResult result) {
 
 #endif
 
-static void send_accl_data(void* data) {
-    acclRetry = NULL;
-    send_accl_data_core(data);
-}
-
-static void send_accl_data_core(void* data)
-{
-    if(acclRetry != NULL){
-        if(app_timer_reschedule(acclRetry, 5000)) {
-            app_timer_cancel(acclRetry);
-        }
-        acclRetry = NULL;
-    }
-
-    if(!report_accl)  
-        return;
-        
-    if(has_accl_data == false){
-        acclRetry = app_timer_register(100, send_accl_data,NULL);
-        return;
-    }
-        
-    if(!bluetooth_connection_service_peek()) {
-        // if bluetooth connection is down, retry in 30 seconds
-        acclRetry = app_timer_register(1 * 30 * 1000, send_accl_data,NULL);
-        return;
-    }
-
-    DictionaryIterator *iter;
-    if(app_message_outbox_begin(&iter) != APP_MSG_OK){
-        acclRetry = app_timer_register(500, send_accl_data,NULL);
-        return;
-    }
-    
-    uint16_t ms;
-    time_t now;
-    time_ms(&now, &ms);
-    char buffer[15];
-    snprintf(buffer, sizeof(buffer) - 1, "%lu%03d", now, ms);
-
-    Tuplet t = TupletStaticCString(KEY_OFFSET + T_TIME_BASE, buffer, strlen(buffer));
-    if(dict_write_tuplet(iter, &t) != DICT_OK) {
-        // problem, so skip sending accl data
-        acclRetry = app_timer_register(500, send_accl_data,NULL);
-        return;
-    }
-       
-    Tuplet act = TupletStaticCString(KEY_OFFSET + T_ACTIVITY, cur_activity, strlen(cur_activity));
-    if(dict_write_tuplet(iter, &act) != DICT_OK) {
-        // problem, so skip sending accl data
-        acclRetry = app_timer_register(500, send_accl_data,NULL);
-        return;
-    }
-    
-   
-    long long nowz = now;
-    nowz = nowz * 1000 + ms;
-   
-    
-    for(int i = 0; i < NUM_SAMPLES; i++) {
-        int point = KEY_OFFSET + (10 * i);
-        
-        Tuplet ts = TupletInteger(point + T_TS, (int)(nowz - accl_data[i].timestamp));
-        if(dict_write_tuplet(iter, &ts) != DICT_OK) {
-            // problem, so skip sending accl data
-            acclRetry = app_timer_register(500, send_accl_data,NULL);
-            return;
-        }
-
-        Tuplet x = TupletInteger(point + T_X, accl_data[i].x);
-        if(dict_write_tuplet(iter, &x) != DICT_OK) {
-            // problem, so skip sending accl data
-            acclRetry = app_timer_register(500, send_accl_data,NULL);
-            return;
-        }
-
-        Tuplet y = TupletInteger(point + T_Y, accl_data[i].y);
-        if(dict_write_tuplet(iter, &y) != DICT_OK) {
-            // problem, so skip sending accl data
-            acclRetry = app_timer_register(500, send_accl_data,NULL);
-            return;
-        }
-        
-        Tuplet z = TupletInteger(point + T_Z, accl_data[i].z);
-        if(dict_write_tuplet(iter, &z) != DICT_OK) {
-            // problem, so skip sending accl data
-            acclRetry = app_timer_register(500, send_accl_data,NULL);
-            return;
-        }
-        
-        Tuplet dv = TupletStaticCString(point + T_DID_VIBRATE, accl_data[i].did_vibrate?"1":"0", 1);
-        if(dict_write_tuplet(iter, &dv) != DICT_OK) {
-            // problem, so skip sending accl data
-            acclRetry = app_timer_register(500, send_accl_data,NULL);
-            return;
-        }
-    }
-    
-    if(dict_write_end(iter) == 0){
-        acclRetry = app_timer_register(500, send_accl_data,NULL);
-        return;
-    }
-    
-    if(app_message_outbox_send() != APP_MSG_OK){
-        acclRetry = app_timer_register(500, send_accl_data,NULL);
-        return;
-    }
-    
-    has_accl_data = false;
-}
-
 static void app_timer_accl_stop(void* data) {
 
     if(acclStart != NULL){
@@ -212,6 +99,7 @@ static void app_timer_accl_stop(void* data) {
 
     // set report flag to false to indicate we want to pause reporting accl data
     report_accl = 0;
+    accl_deinit();
     
     // set timer that will start reporting accl data after two minutes
     acclStart = app_timer_register(curFreq * 2 * 60 * 1000, app_timer_accl_start,NULL);
@@ -231,10 +119,8 @@ static void app_timer_accl_start(void* data) {
     }
 
 
-    // set report flag to true to indicate we want to report accl data
 
-    report_accl = 1;
-    send_accl_data_core(NULL);
+    accl_init();
     
     // set timer that will stop reporting accl data after about one minute
     acclStop = app_timer_register(80 * 1000, app_timer_accl_stop,NULL);
@@ -257,24 +143,6 @@ static void app_timer_battery(void* data) {
     battTimer = app_timer_register(curFreq * 5 * 60 * 1000, app_timer_battery,NULL);
 }
 
-static void accl_new_data(AccelData *data, uint32_t num_samples) {
-    for(uint32_t i = 0; i < num_samples; i++) {
-        accl_data[i].x = data[i].x;
-        accl_data[i].y = data[i].y;
-        accl_data[i].z = data[i].z;
-        accl_data[i].timestamp = data[i].timestamp;
-        accl_data[i].did_vibrate = data[i].did_vibrate;
-    }
-    has_accl_data = true;
-}
-
-static bool is_accl_available() {
-    if(report_accl == 1){
-        return true;
-    }
-    return false;
-}
-
 static bool is_log_available() {
     if(curLog > 0){
         return true;
@@ -284,20 +152,14 @@ static bool is_log_available() {
 
 void strap_out_sent_handler(DictionaryIterator *iter, void *context)
 {
-    if(is_accl_available()) {
-        send_accl_data_core(NULL);
-    }
-    else if(is_log_available()) {
+        if(is_log_available()) {
         send_next_log(NULL);
     }
 }
 
 void strap_out_failed_handler(DictionaryIterator *iter, AppMessageResult result, void *context)
 {
-    if(is_accl_available()) {
-        send_accl_data_core(NULL);
-    }
-    else if(is_log_available()) {
+    if(is_log_available()) {
         send_next_log(NULL);
     }
 #ifdef DEBUG
@@ -308,26 +170,21 @@ void strap_out_failed_handler(DictionaryIterator *iter, AppMessageResult result,
 void strap_init() {
     memset(cur_activity, 0, sizeof(cur_activity));
     strap_set_activity("UNKNOWN");
-    //int in_size = app_message_inbox_size_maximum();
-    //int out_size = app_message_outbox_size_maximum();
     app_message_register_outbox_sent(strap_out_sent_handler);
     app_message_register_outbox_failed(strap_out_failed_handler);
 
-    //app_message_open(in_size, out_size);
-
-    accel_data_service_subscribe(NUM_SAMPLES, (AccelDataHandler)accl_new_data);
-    accel_service_set_sampling_rate(ACCEL_SAMPLING_10HZ);
-
     // start sending accl data in 30 seconds
-    acclStart = app_timer_register(30 * 1000, app_timer_accl_start,NULL);
+    #ifndef DISABLE_ACCL
+        acclStart = app_timer_register(30 * 1000, app_timer_accl_start,NULL);
+    #endif
     battTimer = app_timer_register(1 * 10 * 1000, app_timer_battery,NULL);
     //app_timer_register(30 * 1000,log_timer, NULL);
     app_timer_register(1  * 1000,log_action,"STRAP_START");
 }
 
 void strap_deinit() {
-    accel_data_service_unsubscribe();
     strap_log_action("STRAP_FINISH");
+    accl_deinit();
 }
 
 // deprecated
