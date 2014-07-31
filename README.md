@@ -13,13 +13,13 @@ We hope that getting started with the Strap Metrics SDK is easy for you. These s
 ** Note: The below shows you how to integrate with a JS project. If you have an iOS or Android companion app, check out the README in the companion directory. The rest of the steps below still apply.
 
 ---
-1. Add the Strap Metrics SDK to your Pebble project. Run this from the src directory:
+1. Login to the <a href="http://www.straphq.com/login">Strap Dashboard</a> and create an app. You'll need your App ID handy for the next step.
+2. Add the Strap Metrics SDK to your Pebble project. Run this from the src directory:
 
    ```
    curl http://pebble-install.straphq.com | sh
    ```
    
-2. Login to the <a href="http://www.straphq.com/login">Strap Dashboard</a> and create an app. You'll need your App ID handy for the next step.
 
 3. Paste the JS code into your pebble-app.js. This step is important, because without it the Strap code on the device can't communicate with the Strap API. This step has two parts: 
   * Paste the following initialization code at the top of your Javascript file. 
