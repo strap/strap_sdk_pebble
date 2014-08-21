@@ -83,8 +83,7 @@ We hope that getting started with the Strap Metrics SDK is easy for you. These s
       const bool animated = true;
       window_stack_push(window, animated);
       
-      app_message_register_inbox_received(in_received_handler);
-      
+
       int in_size = app_message_inbox_size_maximum();
       int out_size = app_message_outbox_size_maximum();
       app_message_open(in_size, out_size);
