@@ -19,7 +19,7 @@ Getting Started with the Strap Metrics Pebble SDK for Android Companion Apps
 		// instantiate StrapMetrics
         // change the appID to match yours!
         
-        final StrapMetrics sm = new StrapMetrics("rdjYKgrfeAPeMSjQ4");
+        final StrapMetrics sm = new StrapMetrics("xyzabc123abcxyz");
         final Properties lp = new Properties();
         lp.put("resolution", "144x168");
         lp.put("useragent", "PEBBLE/2.0");
