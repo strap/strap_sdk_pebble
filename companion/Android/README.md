@@ -16,7 +16,7 @@ Getting Started with the Strap Metrics Pebble SDK for Android Companion Apps
 
 4. Paste in the Strap Metrics init code:
 
-		// init StrapMetrics
+		// instantiate StrapMetrics
         // change the appID to match yours!
         
         final StrapMetrics sm = new StrapMetrics("rdjYKgrfeAPeMSjQ4");

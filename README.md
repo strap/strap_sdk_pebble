@@ -8,7 +8,7 @@ Strap Metrics is a real-time wearable analytics platform for developers. This re
 
 We now support both Pebble JS apps and companion apps for iOS and Android. Strap Metrics utilizes AppMessage to communicate between the watch and the connected phone, and tries to be smart about how often it sends data in order to preserve battery life. 
 
-We hope that getting started with the Strap Metrics SDK is easy for you. These steps shouldn't take more than 15-20 minutes. Grab a cup of coffee, and let's get to it!
+Getting started with the Strap Metrics SDK is pretty straightforward. These steps shouldn't take more than 15-20 minutes. 
 
 ** Note: The below shows you how to integrate with a JS project. If you have an iOS or Android companion app, check out the README in the companion directory. The rest of the steps below still apply.
 
@@ -114,5 +114,7 @@ We hope that getting started with the Strap Metrics SDK is easy for you. These s
     }
     ```
 
-If you made it this far, congrats! You've successfully integrated Strap into your Pebble application. We'll start crunching the numbers as data starts to flow into Strap, and you'll be seeing reports on the dashboard in a few minutes. We have tested Strap in a variety of app configurations, but your feedback is extremely important to us in this beta period! If you have any questions, concerns, or problems with Strap Metrics, please let us know. You can open an issue on GitHub, visit our community support portal at http://strap.uservoice.com, email us at support@straphq.com, or tweet us @getstrap. 
+![alt text](http://images.memegenerator.net/images/200x/1031.jpg "Success Kid")
+
+Success! You've successfully integrated Strap into your Pebble application. We'll start crunching the numbers as data starts to flow into Strap, and you'll be seeing reports on the dashboard in a few minutes. We have tested Strap in a variety of app configurations, but your feedback is extremely important to us in this beta period! If you have any questions, concerns, or problems with Strap Metrics, please let us know. You can open an issue on GitHub, visit our community support portal at http://strap.uservoice.com, email us at support@straphq.com, or tweet us @getstrap. 
 
