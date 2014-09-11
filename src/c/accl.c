@@ -119,12 +119,12 @@ void handle_second_tick(struct tm *tick_time, TimeUnits units_changed)
 			sample_count, acc_count, ack_count, fail_count);
 
 }
-void out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, void *context) {
+void accl_out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, void *context) {
 	APP_LOG(APP_LOG_LEVEL_DEBUG, "App Message Failed to Send(%3d)! error: 0x%02X ",++fail_count,reason);
 	msg_run = false;
 
 }
-void out_received_handler(DictionaryIterator *iterator, void *context) {
+void accl_out_received_handler(DictionaryIterator *iterator, void *context) {
 	//APP_LOG(APP_LOG_LEVEL_INFO, "App Message sent");
 	ack_count++;
 	msg_run = false;
@@ -149,8 +149,8 @@ void accl_init(void) {
 	accel_data_service_subscribe(10, &accel_data_handler);
 	accel_service_set_sampling_rate(sample_freq); //This is the place that works
 	
-	app_message_register_outbox_failed(out_failed_handler);
-	app_message_register_outbox_sent(out_received_handler);
+	app_message_register_outbox_failed(accl_out_failed_handler);
+	app_message_register_outbox_sent(accl_out_received_handler);
 
     timer = app_timer_register(timer_interval, timer_callback, NULL);
 	app_comm_set_sniff_interval(SNIFF_INTERVAL_REDUCED);
