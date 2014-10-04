@@ -1,19 +1,3 @@
-/*
-Copyright 2014 EnSens, LLC D/B/A Strap
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 #include <pebble.h>
 #include "strap.h"
 #include "accl.h"
@@ -44,19 +28,14 @@ static int curFreq = 1;  // frequency multiplier
 
 static AppTimer* acclStop = NULL;
 static AppTimer* acclStart = NULL;
-static AppTimer* acclRetry = NULL;
 static AppTimer* battTimer = NULL;
 
-static void send_accl_data(void*);
-static void send_accl_data_core(void*);
 static void app_timer_accl_stop(void*);
 static void app_timer_accl_start(void*);
-static void accl_new_data(AccelData*, uint32_t);
 static void log_action(void*);
 static void app_timer_battery(void*);
 static void appendLog(char*);
 static void send_next_log(void*);
-static bool is_accl_available();
 static bool is_log_available();
 
 #ifdef DEBUG
@@ -168,32 +147,44 @@ void strap_out_failed_handler(DictionaryIterator *iter, AppMessageResult result,
 }
 
 void strap_init() {
-    memset(cur_activity, 0, sizeof(cur_activity));
-    strap_set_activity("UNKNOWN");
-    app_message_register_outbox_sent(strap_out_sent_handler);
-    app_message_register_outbox_failed(strap_out_failed_handler);
+    if (!persist_read_bool(STRAP_OPT_OUT)) {
+        memset(cur_activity, 0, sizeof(cur_activity));
+        strap_set_activity("UNKNOWN");
+        app_message_register_outbox_sent(strap_out_sent_handler);
+        app_message_register_outbox_failed(strap_out_failed_handler);
 
-    // start sending accl data in 30 seconds
-    #ifndef DISABLE_ACCL
-        acclStart = app_timer_register(30 * 1000, app_timer_accl_start,NULL);
-    #endif
-    battTimer = app_timer_register(1 * 10 * 1000, app_timer_battery,NULL);
-    //app_timer_register(30 * 1000,log_timer, NULL);
-    app_timer_register(1  * 1000,log_action,"STRAP_START");
+
+        // start sending accl data in 30 seconds
+        #ifndef DISABLE_ACCL
+            acclStart = app_timer_register(30 * 1000, app_timer_accl_start,NULL);
+        #endif
+        battTimer = app_timer_register(1 * 10 * 1000, app_timer_battery,NULL);
+        //app_timer_register(30 * 1000,log_timer, NULL);
+        app_timer_register(1  * 1000,log_action,"STRAP_START");
+    } else {
+        app_log(APP_LOG_LEVEL_INFO, "log", 0, "USER OPTED OUT OF STRAP METRICS");
+    }
 }
 
 void strap_deinit() {
-    strap_log_action("STRAP_FINISH");
-    accl_deinit();
+    if (!persist_read_bool(STRAP_OPT_OUT)) {
+        strap_log_action("STRAP_FINISH");
+        accl_deinit();
+    }
+
 }
 
 // deprecated
 void strap_log_action(char* path) {
-    log_action(path);
+    if (!persist_read_bool(STRAP_OPT_OUT)) {
+        log_action(path);
+    }
 }
 
 void strap_log_event(char* path) {
-    log_action(path);
+    if (!persist_read_bool(STRAP_OPT_OUT)) {
+        log_action(path);
+    }
 }
 
 static void appendLog(char* path){

@@ -4,6 +4,7 @@
 #define STRAP_FREQ_HIGH     1  // more data collection, but higher power drain
 #define STRAP_FREQ_MED      2  // less data collection, with moderate power drain
 #define STRAP_FREQ_LOW      3  // least data collection, lowest power drain
+#define STRAP_OPT_OUT 49888
 
 // #define DISABLE_ACCL 
 
