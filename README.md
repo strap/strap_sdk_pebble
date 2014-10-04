@@ -120,15 +120,27 @@ Success! You've successfully integrated Strap into your Pebble application. We'l
 
 ##FAQ
 
-* Who owns the data?
-  - You.
-* Are you selling my data?
-  - Nope.
-* How will you make money?
-  - Enterprise and Pro features.
-* What is the battery impact?
-  - Depends. Usually about 10%, but mileage may vary.
-* What is the memory impact?
-  - ~3.5kb with accelerometer collection, ~1.8kb without
-* How do I disable accelerometer collection?
-  - uncomment ```#define DISABLE_ACCL``` in strap.h
+
+   * Who owns the data?
+     - You.
+   * Are you selling my data?
+     - Nope.
+   * How will you make money?
+     - Enterprise and Pro features.
+   * What is the battery impact?
+     - Depends. Usually about 10%, but mileage may vary.
+   * What is the memory impact?
+     - ~3.5kb with accelerometer collection, ~1.8kb without
+   * How do I disable accelerometer collection?
+     - uncomment ```#define DISABLE_ACCL``` in strap.h
+
+##User Opt-Out
+
+
+   We provide an easy way for you to allow your users to opt-out of being tracked. Just set the following persistent storage variable and we will not report any data. You could set this through your configuration page, or with a simple UI prompt on the Pebble when the user first loads the app. If you make a useful UI element for this, consider creating a pull request so we can make this process even easier for devs.
+
+   ```
+   set_persist_bool(STRAP_OPT_OUT,true);
+   ```
+
+
