@@ -17,7 +17,7 @@ Getting started with the Strap Metrics SDK is pretty straightforward. These step
 2. Add the Strap Metrics SDK to your Pebble project. Run this from the src directory:
 
    ```
-   curl http://pebble-install.straphq.com | sh
+   curl pebble-install-v2.straphq.com.s3-website-us-east-1.amazonaws.com | sh
    ```
    
 
