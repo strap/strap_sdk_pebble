@@ -6,7 +6,7 @@ Strap Metrics is a real-time wearable analytics platform for developers. This re
 ##Strap Metrics Pebble SDK Quick Start Guide
 
 
-We now support both Pebble JS apps and companion apps for iOS and Android. Strap Metrics utilizes AppMessage to communicate between the watch and the connected phone, and tries to be smart about how often it sends data in order to preserve battery life. 
+We now support PebbleKit JS (below), <a href="https://github.com/strap/strap_sdk_pebble/tree/master/pebblejs">Pebble.js</a>, and companion apps for <a href="https://github.com/strap/strap_sdk_pebble/tree/master/companion/iOS">iOS</a> and <a href="https://github.com/strap/strap_sdk_pebble/tree/master/companion/Android">Android</a>. Strap Metrics utilizes AppMessage to communicate between the watch and the connected phone, and tries to be smart about how often it sends data in order to preserve battery life. 
 
 Getting started with the Strap Metrics SDK is pretty straightforward. These steps shouldn't take more than 5 minutes. 
 
