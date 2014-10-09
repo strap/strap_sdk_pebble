@@ -2,6 +2,10 @@ Strap Metrics for Pebble.js
 ===
 This is a sample Pebble.js project that includes Strap Metrics support. Below is a sample app.js. Better docs will be here soon.
 
+1. Login to the <a href="http://www.straphq.com/login">Strap Dashboard</a> and create an app. You'll need your App ID handy for the next step.
+
+2. Integrate Strap with your code as shown below.
+
 
 ```
 /**
