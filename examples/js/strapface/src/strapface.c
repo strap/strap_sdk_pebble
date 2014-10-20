@@ -1,5 +1,5 @@
 /*
-Copyright 2014 EnSens, LLC D/B/A Strap
+Copyright 2014 Strap,LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -161,6 +161,7 @@ void handle_init(void) {
   // handle initialization of Strap
   strap_init();
 
+  prompt_opt_out(true);
 }
 
 

@@ -1,0 +1,1 @@
+#define STRAP_OPT_OUT 49888
