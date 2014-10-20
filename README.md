@@ -135,12 +135,17 @@ Success! You've successfully integrated Strap into your Pebble application. We'l
      - uncomment ```#define DISABLE_ACCL``` in strap.h
 
 ##User Opt-Out
+   We provide an easy way for you to allow your users to opt-out of being tracked. Use this simple function which will push a new window asking the user for permission. Call it at either the end of init() or put it in a click handler using:
+   ```
+   prompt_opt_out(default_selection);
+   ```
+   default_selection is a boolean which, when true, automatically highlights "Yes", and, when false, highlights "No". Here is what the prompt looks like:
+   
+   ![alt text](https://github.com/cheniel/strap-optout-prompt-test/raw/master/screenshots/screenshot.png "Prompt Screenshot")
 
-
-   We provide an easy way for you to allow your users to opt-out of being tracked. Just set the following persistent storage variable and we will not report any data. You could set this through your configuration page, or with a simple UI prompt on the Pebble when the user first loads the app. If you make a useful UI element for this, consider creating a pull request so we can make this process even easier for devs.
+   If you would rather create your own interface for prompting the user, just set the following persistent storage variable and we will not report any data. You could set this through your configuration page, or with a simple UI prompt on the Pebble when the user first loads the app.
 
    ```
    set_persist_bool(STRAP_OPT_OUT,true);
    ```
-
-
+   
