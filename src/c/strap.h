@@ -18,6 +18,7 @@ void strap_out_sent_handler(DictionaryIterator *, void *);
 void strap_out_failed_handler(DictionaryIterator *, AppMessageResult , void *);
 void strap_set_activity(char*);
 void strap_set_freq(int);
+void prompt_opt_out(bool default_selection);
 
 #endif
 
