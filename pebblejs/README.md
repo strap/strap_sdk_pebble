@@ -8,33 +8,21 @@ This is a sample Pebble.js project that includes Strap Metrics support. Below is
 
 
 ```
-/**
- * Welcome to Pebble.js!
- *
- * This is where you write your app.
- */
-
 var UI = require('ui');
 var Vector2 = require('vector2');
+
 var SM = require('strap-metrics');
-
-
-var strap_params = {
-  // CHANGE ME!
-    app_id: "abc123abc123xyz",
+var strapMetricsParms = {
+    app_id: "jNW93sNJpsgTGiPQF",
     resolution: "144x168",
     useragent: "PEBBLE/2.0"
 };
 
-// turn on accelerometer if desired
-var Accel = require('ui/accel');
-Accel.init();
-strap_api_init_accel(Accel, strap_params);
+SM.Init(strapMetricsParms);
 
-// init the strap api
-strap_api_init(strap_params);
-
-// -------------------------
+// if accel functionality desired
+var Accel = require('accel');
+SM.InitAccel(strapMetricsParms,Accel);
 
 var main = new UI.Card({
   title: 'Pebble.js',
@@ -44,10 +32,7 @@ var main = new UI.Card({
 });
 
 main.show();
-
-params = strap_api_clone(strap_params);
-params['action_url'] = '/main/show';
-strap_api_log(params);
+SM.Log('/main/show');
 
 main.on('click', 'up', function(e) {
   var menu = new UI.Menu({
@@ -65,8 +50,6 @@ main.on('click', 'up', function(e) {
   menu.on('select', function(e) {
     console.log('Selected item #' + e.itemIndex + ' of section #' + e.sectionIndex);
     console.log('The item is titled "' + e.item.title + '"');
-    params['action_url'] = '/selected/'+e.item.title;
-    strap_api_log(params);
   });
   menu.show();
 });
@@ -82,8 +65,6 @@ main.on('click', 'select', function(e) {
   });
   wind.add(textfield);
   wind.show();
-  params['action_url'] = '/main/select';
-  strap_api_log(params);
 });
 
 main.on('click', 'down', function(e) {
@@ -92,8 +73,6 @@ main.on('click', 'down', function(e) {
   card.subtitle('Is a Window');
   card.body('The simplest window type in Pebble.js.');
   card.show();
-  params['action_url'] = '/main/down';
-  strap_api_log(params);
 });
 
 ```
