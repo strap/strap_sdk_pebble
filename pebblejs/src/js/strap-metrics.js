@@ -1,18 +1,15 @@
-// ------------------------------
-// Start of Strap API
-// ------------------------------
 
 var strap_api_url = "https://api.straphq.com/create/visit/with/";
 
-
 var strap_api_clone = function(obj) {
-    if (null == obj || "object" != typeof obj) return obj;
     var copy = {};
-    for (var attr in obj) {
-        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    var attr;
+    if (!obj || "object" !== typeof obj) { return obj; }
+    for (attr in obj) {
+        if (obj.hasOwnProperty(attr)) { copy[attr] = obj[attr]; }
     }
     return copy;
-}
+};
 
 // probably want to clone your constant params before adding values
 // var params = strap_api_clone(strap_params);
@@ -22,7 +19,7 @@ function strap_api_init_accel(accel, params){
         rate: 10,
         samples: 10
     });
-    var p = strap_api_clone(params); 
+    var p = strap_api_clone(params);
     p['action_url'] = "STRAP_API_ACCL";
     strap_api_accl_on(accel, p);
 }
@@ -101,7 +98,7 @@ function strap_api_log(params){
         + '&visitor_id=' + (lp['visitor_id'] || Pebble.getAccountToken())
         + '&act=' + (lp['act']  || "")
         + '&visitor_timeoffset=' + tz_offset;
-        
+
     if(lp['action_url'] === "STRAP_API_ACCL"){
         var tmpstore = window.localStorage['strap_accl'];
         if(tmpstore){
@@ -114,20 +111,20 @@ function strap_api_log(params){
             return;
         }
         var da = strap_api_conv_accel(tmpstore);
-        
+
         query = query + '&accl=' + encodeURIComponent(JSON.stringify(da));
         window.localStorage.removeItem('strap_accl');
     }
     else{
-        var p = strap_api_clone(params); 
+        var p = strap_api_clone(params);
         p['action_url'] = "STRAP_API_ACCL";
         setTimeout(function(){
             strap_api_log(p);
         }, 100);
     }
-        
+
     //console.log('query: ' + query);
-    
+
     //Send the proper header information along with the request
     req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     req.setRequestHeader("Content-length", query.length);
@@ -137,14 +134,31 @@ function strap_api_log(params){
         if (req.readyState == 4 && req.status == 200) {
             if(req.status == 200) {
                 //console.log("Sent");
-            } else { 
-            //console.log("Error"); 
+            } else {
+            //console.log("Error");
             }
         }
-    }
+    };
     req.send(query);
 }
 
-// ------------------------------
-// End of Strap API
-// ------------------------------
+var APP = {};
+module.exports = {
+    'Init' : function(params){
+        APP = strap_api_clone(params);
+        if( APP ) {
+            strap_api_init(APP);
+        }
+    },
+    'InitAccel' : function(params,Accel){
+        APP = strap_api_clone(params);
+        if( APP ) {
+            if( Accel ) { strap_api_init_accel(Accel, APP); }
+        }
+    },
+    'Log' : function(e){
+        var params = strap_api_clone(APP);
+        params['action_url'] = e;
+        strap_api_log(params);
+    }
+};
