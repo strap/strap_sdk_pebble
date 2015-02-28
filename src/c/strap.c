@@ -26,6 +26,9 @@ static char logqueue[LOG_ROWS][LOG_COLS];
 static int curLog = 0;
 static int curFreq = 1;  // frequency multiplier
 
+static int timeAcclTimeout = 120000; // 2 minutes
+static int timeAcclRuntime = 80000; // 1 minute, 20 seconds
+
 static AppTimer* acclStop = NULL;
 static AppTimer* acclStart = NULL;
 static AppTimer* battTimer = NULL;
@@ -37,6 +40,11 @@ static void app_timer_battery(void*);
 static void appendLog(char*);
 static void send_next_log(void*);
 static bool is_log_available();
+
+// Allows developers to give users the option to
+// change how often accelerometer data is collected
+static void strap_set_time_accl_timeout(int);
+static void strap_set_time_accl_runtime(int);
 
 
 #ifdef DEBUG
@@ -81,8 +89,9 @@ static void app_timer_accl_stop(void* data) {
     report_accl = 0;
     accl_deinit();
     
-    // set timer that will start reporting accl data after two minutes
-    acclStart = app_timer_register(curFreq * 2 * 60 * 1000, app_timer_accl_start,NULL);
+    // set timer that will start reporting accl data after a defined time
+    // default is 2 minutes
+    acclStart = app_timer_register(curFreq * timeAcclTimeout, app_timer_accl_start,NULL);
 }
 
 static void app_timer_accl_start(void* data) {
@@ -102,8 +111,9 @@ static void app_timer_accl_start(void* data) {
 
     accl_init();
     
-    // set timer that will stop reporting accl data after about one minute
-    acclStop = app_timer_register(80 * 1000, app_timer_accl_stop,NULL);
+    // set timer that will stop reporting accl data after a predefined time
+    // default is ~1 minute
+    acclStop = app_timer_register(timeAcclRuntime, app_timer_accl_stop,NULL);
 }
 
 static void app_timer_battery(void* data) {
@@ -287,4 +297,12 @@ void strap_set_activity(char* act) {
 
 void strap_set_freq(int freq) {
     curFreq = freq;
+}
+
+void strap_set_time_accl_timeout(int ms) {
+    timeAcclTimeout = ms;
+}
+
+void strap_set_time_accl_runtime(int ms) {
+    timeAcclRuntime = ms;
 }

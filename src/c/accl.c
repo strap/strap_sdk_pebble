@@ -13,7 +13,8 @@ int16_t *acc_data;
 time_t   acc_time;
 uint8_t num_samples = 10; 
 static DictionaryIterator dict_iter, *iter = &dict_iter;
-char *xyz_str = "X,Y,Z:                      ";
+// Not being used with current buffer configuration
+// char *xyz_str = "X,Y,Z:                      ";
 bool waiting_data = false;
 bool msg_run = false;
 
@@ -40,6 +41,7 @@ void request_send_acc(void) {
 	uint16_t ms;
 	time_t now;
 	time_ms(&now, &ms);
+
 	char buffer[15];
 	snprintf(buffer, sizeof(buffer) - 1, "%lu%03d", now, ms);
 	
@@ -47,10 +49,7 @@ void request_send_acc(void) {
 	//APP_LOG(APP_LOG_LEVEL_DEBUG, "%s",xyz_str);
 	app_message_outbox_begin(&iter);
 
-    long long nowz = now;
-    nowz = nowz * 1000 + ms;
-
-    
+    long long nowz = now * 1000 + ms;
 
 	Tuplet t = TupletStaticCString(KEY_OFFSET + T_TIME_BASE, buffer, strlen(buffer));
 	dict_write_tuplet(iter, &t);
@@ -90,10 +89,10 @@ void timer_callback (void *data) {
 		request_send_acc(); 
 	timer = app_timer_register(timer_interval, timer_callback, NULL);
 }
-void handle_second_tick(struct tm *tick_time, TimeUnits units_changed)
-{
+
+void handle_second_tick(struct tm *tick_time, TimeUnits units_changed) {
 	// Need to be static because they're used by the system later.
-	static char count_text[] = "                                                                    ";
+	static char count_text[69];
 
 	snprintf(count_text,sizeof(count_text) ,"sample:%03d \n   sent:  %03d \n   ack:   %03d \n   faild:  %03d", 
 		sample_count, acc_count, ack_count, fail_count);
@@ -102,19 +101,21 @@ void handle_second_tick(struct tm *tick_time, TimeUnits units_changed)
 			sample_count, acc_count, ack_count, fail_count);
 
 }
+
 void accl_out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, void *context) {
 	APP_LOG(APP_LOG_LEVEL_DEBUG, "App Message Failed to Send(%3d)! error: 0x%02X ",++fail_count,reason);
 	msg_run = false;
 
 }
+
 void accl_out_received_handler(DictionaryIterator *iterator, void *context) {
 	//APP_LOG(APP_LOG_LEVEL_INFO, "App Message sent");
 	ack_count++;
 	msg_run = false;
 }
-void accel_data_handler(AccelData *data, uint32_t num_samples) {
 
-    for(uint32_t i = 0; i < num_samples; i++) {
+void accel_data_handler(AccelData *data, uint32_t num_samples) {
+    for(uint32_t i = 0; i < num_samples && i < NUM_SAMPLES; i++) {
         accl_data[i].x = data[i].x;
         accl_data[i].y = data[i].y;
         accl_data[i].z = data[i].z;
